@@ -1,0 +1,42 @@
+name: SkillForge CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  skillforge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install SkillForge
+        run: pip install skillforge
+
+      - name: Validate manifest
+        run: skillforge compat --output compat.json
+
+      - name: Security scan
+        run: skillforge scan --output scan.json --no-snyk
+
+      - name: Run test suite
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: skillforge test --junit test-results.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: skillforge-reports
+          path: |
+            compat.json
+            scan.json
+            test-results.xml

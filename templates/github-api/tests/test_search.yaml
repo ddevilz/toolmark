@@ -1,0 +1,37 @@
+# tests/test_search.yaml
+# LLM-as-judge test cases for the github-api skill
+
+- id: search_open_prs
+  input: "find my open pull requests"
+  expect_invoked: true
+  expect_tool: search_pull_requests
+  expect_params:
+    state: open
+    assignee: "@me"
+  tolerance: fuzzy
+  tags: [smoke]
+
+- id: search_all_prs
+  input: "show all PRs in myorg/backend"
+  expect_invoked: true
+  expect_tool: search_pull_requests
+  expect_params:
+    repo: "myorg/backend"
+  tolerance: fuzzy
+  tags: [smoke]
+
+- id: irrelevant_query
+  input: "what is the weather in Mumbai today?"
+  expect_invoked: false
+  tolerance: invoked
+  tags: [smoke, negative]
+
+- id: get_specific_issue
+  input: "get issue 42 from myorg/backend"
+  expect_invoked: true
+  expect_tool: get_issue
+  expect_params:
+    repo: "myorg/backend"
+    issue_number: 42
+  tolerance: strict
+  tags: [regression]

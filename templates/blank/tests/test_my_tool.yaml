@@ -1,0 +1,18 @@
+# tests/test_my_tool.yaml
+# Add your LLM-as-judge test cases below.
+# Each case: input (natural language), expected tool, expected params.
+
+- id: basic_invocation
+  input: "TODO: put a natural language query here"
+  expect_invoked: true
+  expect_tool: my_tool
+  expect_params:
+    param1: "value"
+  tolerance: fuzzy
+  tags: [smoke]
+
+- id: negative_case
+  input: "what is 2 + 2?"
+  expect_invoked: false
+  tolerance: invoked
+  tags: [smoke, negative]
