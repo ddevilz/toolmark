@@ -108,8 +108,7 @@ class TestLLMJudge:
 
 @pytest.mark.integration
 @pytest.mark.skipif(
-    not os.getenv("ANTHROPIC_API_KEY"), 
-    reason="Requires ANTHROPIC_API_KEY for real LLM call"
+    not os.getenv("ANTHROPIC_API_KEY"), reason="Requires ANTHROPIC_API_KEY for real LLM call"
 )
 @pytest.mark.asyncio
 async def test_integration_real_llm_judge():
@@ -121,7 +120,7 @@ async def test_integration_real_llm_judge():
         actual_tool="search_pull_requests",
         actual_params={"state": "open", "assignee": "@me"},
     )
-    
+
     # Should pass with high confidence for exact match
     assert passed is True
     assert conf > 0.7
