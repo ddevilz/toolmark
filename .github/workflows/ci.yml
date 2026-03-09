@@ -128,6 +128,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, build]
     if: github.event_name == 'release'
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
 
     steps:
     - uses: actions/checkout@v4
