@@ -9,7 +9,6 @@ from skillforge.config import SkillForgeConfig, load_config
 
 
 class TestConfigLoading:
-
     def test_default_config_loads(self):
         cfg = load_config()
         assert isinstance(cfg, SkillForgeConfig)
@@ -36,5 +35,6 @@ class TestConfigLoading:
 
     def test_default_platforms_clawhub(self):
         from skillforge.models import Platform
+
         cfg = load_config()
         assert Platform.CLAWHUB in cfg.default_platforms

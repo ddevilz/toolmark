@@ -3,7 +3,6 @@ Tests for skillforge.commands.compat — platform compatibility checker.
 No external API calls required.
 """
 
-
 from skillforge.commands.compat import PLATFORM_CONSTRAINTS, _check_platform
 from skillforge.models import CompatStatus, Platform
 
@@ -14,23 +13,21 @@ def _base_manifest():
         "version": "0.1.0",
         "author": "test",
         "description": "A test skill",
-        "tools": [
-            {"name": "search_prs", "description": "Search pull requests", "parameters": []}
-        ],
+        "tools": [{"name": "search_prs", "description": "Search pull requests", "parameters": []}],
         "declared_permissions": [],
         "platforms": ["clawhub"],
     }
 
 
 class TestCompatChecker:
-
     def test_valid_manifest_passes_all_platforms(self):
         manifest = _base_manifest()
         for platform in Platform:
             result = _check_platform(platform, manifest, skill_md_bytes=100)
             # Even if some warnings, should not FAIL for a basic valid manifest
-            assert result.status in (CompatStatus.PASS, CompatStatus.WARN), \
+            assert result.status in (CompatStatus.PASS, CompatStatus.WARN), (
                 f"{platform.value} failed: {result.issues}"
+            )
 
     def test_skill_md_too_large_clawhub_fails(self):
         manifest = _base_manifest()
@@ -76,4 +73,6 @@ class TestCompatChecker:
     def test_platform_constraints_matrix_complete(self):
         """All 4 platforms must be present in the constraint matrix."""
         for platform in Platform:
-            assert platform in PLATFORM_CONSTRAINTS, f"{platform.value} missing from constraint matrix"
+            assert platform in PLATFORM_CONSTRAINTS, (
+                f"{platform.value} missing from constraint matrix"
+            )

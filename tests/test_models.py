@@ -21,7 +21,6 @@ from skillforge.models import (
 
 
 class TestSkillManifest:
-
     def test_valid_manifest(self):
         m = SkillManifest(
             name="my-skill",
@@ -50,7 +49,10 @@ class TestSkillManifest:
 
     def test_platforms_list(self):
         m = SkillManifest(
-            name="my-skill", version="1.0.0", author="x", description="d",
+            name="my-skill",
+            version="1.0.0",
+            author="x",
+            description="d",
             platforms=[Platform.CLAWHUB, Platform.CURSOR],
         )
         assert Platform.CLAWHUB in m.platforms
@@ -60,12 +62,13 @@ class TestSkillManifest:
             name="search_prs",
             description="Search pull requests",
         )
-        m = SkillManifest(name="my-skill", version="1.0.0", author="x", description="d", tools=[tool])
+        m = SkillManifest(
+            name="my-skill", version="1.0.0", author="x", description="d", tools=[tool]
+        )
         assert m.tools[0].name == "search_prs"
 
 
 class TestSkillTool:
-
     def test_tool_name_snake_case_ok(self):
         t = SkillTool(name="my_tool", description="A tool")
         assert t.name == "my_tool"
@@ -84,7 +87,6 @@ class TestSkillTool:
 
 
 class TestScanReport:
-
     def test_scan_report_counts_severities(self):
         manifest = SkillManifest(name="s", version="0.0.1", author="x", description="d")
         findings = [
@@ -109,12 +111,13 @@ class TestScanReport:
 
 
 class TestCompatReport:
-
     def test_overall_fail_when_any_platform_fails(self):
         manifest = SkillManifest(name="s", version="0.0.1", author="x", description="d")
         platforms = [
             PlatformCompatResult(platform=Platform.CLAWHUB, status=CompatStatus.PASS),
-            PlatformCompatResult(platform=Platform.CURSOR,  status=CompatStatus.FAIL, issues=["Too big"]),
+            PlatformCompatResult(
+                platform=Platform.CURSOR, status=CompatStatus.FAIL, issues=["Too big"]
+            ),
         ]
         report = CompatReport(manifest=manifest, platforms=platforms)
         assert report.overall_status == CompatStatus.FAIL
@@ -123,7 +126,9 @@ class TestCompatReport:
         manifest = SkillManifest(name="s", version="0.0.1", author="x", description="d")
         platforms = [
             PlatformCompatResult(platform=Platform.CLAWHUB, status=CompatStatus.PASS),
-            PlatformCompatResult(platform=Platform.CURSOR,  status=CompatStatus.WARN, warnings=["note"]),
+            PlatformCompatResult(
+                platform=Platform.CURSOR, status=CompatStatus.WARN, warnings=["note"]
+            ),
         ]
         report = CompatReport(manifest=manifest, platforms=platforms)
         assert report.overall_status == CompatStatus.WARN
@@ -131,7 +136,7 @@ class TestCompatReport:
     def test_overall_pass_when_all_pass(self):
         manifest = SkillManifest(name="s", version="0.0.1", author="x", description="d")
         platforms = [
-            PlatformCompatResult(platform=Platform.CLAWHUB,     status=CompatStatus.PASS),
+            PlatformCompatResult(platform=Platform.CLAWHUB, status=CompatStatus.PASS),
             PlatformCompatResult(platform=Platform.CLAUDE_CODE, status=CompatStatus.PASS),
         ]
         report = CompatReport(manifest=manifest, platforms=platforms)
@@ -139,11 +144,12 @@ class TestCompatReport:
 
 
 class TestSkillTestCase:
-
     def test_default_tolerance_is_fuzzy(self):
         tc = SkillTestCase(input="search my PRs", expect_invoked=True)
         assert tc.tolerance == ToleranceLevel.FUZZY
 
     def test_strict_tolerance(self):
-        tc = SkillTestCase(input="get issue 42", expect_invoked=True, tolerance=ToleranceLevel.STRICT)
+        tc = SkillTestCase(
+            input="get issue 42", expect_invoked=True, tolerance=ToleranceLevel.STRICT
+        )
         assert tc.tolerance == ToleranceLevel.STRICT

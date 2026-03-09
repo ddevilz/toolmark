@@ -19,7 +19,6 @@ def tmp_skill_dir(tmp_path):
 
 
 class TestInitCommand:
-
     def test_init_creates_skill_json(self, tmp_skill_dir):
         """init should create a valid skill.json with correct fields."""
         result = runner.invoke(app, ["init", "my-skill", "--dir", str(tmp_skill_dir)])
@@ -59,22 +58,32 @@ class TestInitCommand:
 
     def test_init_with_invalid_template_raises(self, tmp_skill_dir):
         """init should reject unknown template names."""
-        result = runner.invoke(app, ["init", "my-skill", "--template", "nonexistent", "--dir", str(tmp_skill_dir)])
+        result = runner.invoke(
+            app, ["init", "my-skill", "--template", "nonexistent", "--dir", str(tmp_skill_dir)]
+        )
         assert result.exit_code != 0
 
     def test_init_template_github_api(self, tmp_skill_dir):
         """github-api template should include search_pull_requests tool."""
-        runner.invoke(app, ["init", "my-gh-skill", "--template", "github-api", "--dir", str(tmp_skill_dir)])
+        runner.invoke(
+            app, ["init", "my-gh-skill", "--template", "github-api", "--dir", str(tmp_skill_dir)]
+        )
         skill_md = tmp_skill_dir / "my-gh-skill" / "SKILL.md"
         assert "search_pull_requests" in skill_md.read_text()
 
     def test_init_sets_platforms_in_manifest(self, tmp_skill_dir):
         """Platforms flag should be reflected in skill.json."""
-        runner.invoke(app, [
-            "init", "my-skill",
-            "--platforms", "clawhub,cursor",
-            "--dir", str(tmp_skill_dir),
-        ])
+        runner.invoke(
+            app,
+            [
+                "init",
+                "my-skill",
+                "--platforms",
+                "clawhub,cursor",
+                "--dir",
+                str(tmp_skill_dir),
+            ],
+        )
         data = json.loads((tmp_skill_dir / "my-skill" / "skill.json").read_text())
         assert "clawhub" in data.get("platforms", [])
         assert "cursor" in data.get("platforms", [])

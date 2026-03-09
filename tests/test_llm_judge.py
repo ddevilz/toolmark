@@ -25,13 +25,17 @@ def _make_test_case(**kwargs) -> SkillTestCase:
 
 
 class TestLLMJudge:
-
     @pytest.mark.asyncio
     async def test_judge_returns_pass_on_correct_invocation(self):
-        judge_response = json.dumps({"passed": True, "confidence": 0.95, "reasoning": "Exact match."})
+        judge_response = json.dumps(
+            {"passed": True, "confidence": 0.95, "reasoning": "Exact match."}
+        )
 
         with patch("skillforge.utils.llm.llm_call", new_callable=AsyncMock) as mock_call:
-            mock_call.return_value = (judge_response, {"prompt_tokens": 100, "completion_tokens": 20})
+            mock_call.return_value = (
+                judge_response,
+                {"prompt_tokens": 100, "completion_tokens": 20},
+            )
             passed, conf, reasoning = await llm_judge(
                 model="test-model",
                 test_case=_make_test_case(),
@@ -46,7 +50,9 @@ class TestLLMJudge:
 
     @pytest.mark.asyncio
     async def test_judge_returns_fail_on_wrong_tool(self):
-        judge_response = json.dumps({"passed": False, "confidence": 0.9, "reasoning": "Wrong tool invoked."})
+        judge_response = json.dumps(
+            {"passed": False, "confidence": 0.9, "reasoning": "Wrong tool invoked."}
+        )
 
         with patch("skillforge.utils.llm.llm_call", new_callable=AsyncMock) as mock_call:
             mock_call.return_value = (judge_response, {})
@@ -81,7 +87,9 @@ class TestLLMJudge:
 
     @pytest.mark.asyncio
     async def test_judge_negative_case_not_invoked(self):
-        judge_response = json.dumps({"passed": True, "confidence": 0.99, "reasoning": "Correctly not invoked."})
+        judge_response = json.dumps(
+            {"passed": True, "confidence": 0.99, "reasoning": "Correctly not invoked."}
+        )
 
         with patch("skillforge.utils.llm.llm_call", new_callable=AsyncMock) as mock_call:
             mock_call.return_value = (judge_response, {})

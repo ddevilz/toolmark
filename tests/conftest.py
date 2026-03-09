@@ -19,7 +19,7 @@ def sample_manifest() -> SkillManifest:
         declared_permissions=["network:api.github.com", "env:GITHUB_TOKEN"],
         tools=[
             SkillTool(name="search_prs", description="Search pull requests"),
-            SkillTool(name="get_issue",  description="Get a specific issue"),
+            SkillTool(name="get_issue", description="Get a specific issue"),
         ],
     )
 
