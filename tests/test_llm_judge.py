@@ -4,6 +4,7 @@ Uses mocks — no real API calls made.
 """
 
 import json
+import os
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -103,3 +104,25 @@ class TestLLMJudge:
 
         assert passed is True
         assert conf > 0.9
+
+
+@pytest.mark.integration
+@pytest.mark.skipif(
+    not os.getenv("ANTHROPIC_API_KEY"), 
+    reason="Requires ANTHROPIC_API_KEY for real LLM call"
+)
+@pytest.mark.asyncio
+async def test_integration_real_llm_judge():
+    """Integration test with real LLM API call."""
+    passed, conf, reasoning = await llm_judge(
+        model="gpt-4o-mini",
+        test_case=_make_test_case(),
+        actual_invoked=True,
+        actual_tool="search_pull_requests",
+        actual_params={"state": "open", "assignee": "@me"},
+    )
+    
+    # Should pass with high confidence for exact match
+    assert passed is True
+    assert conf > 0.7
+    assert len(reasoning) > 10

@@ -70,6 +70,9 @@ dev = [
 asyncio_mode = "auto"
 testpaths   = ["tests"]
 addopts     = "-v --tb=short"
+markers = [
+    "integration: Tests that require real API keys and external services"
+]
 
 [tool.ruff]
 line-length = 100
